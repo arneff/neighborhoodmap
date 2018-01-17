@@ -1,0 +1,48 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: stretch;
+}
+
+#sidebar {
+  min-width: 280px;
+  max-width: 280px;
+  min-height: 100vh;
+  padding-right: 15px;
+  display: block;
+  float: left;
+}
+
+#sidebar.active {
+  margin-left: -280px;
+}
+
+#content {
+  width: 100%;
+}
+
+#header {
+  margin-top: 20px;
+}
+
+#bbqlist {
+  margin-top: 20px;
+}
+
+#map {
+  height: 100%;
+}
+
+footer {
+  height: 100px;
+}
+
+
+@media (max-width: 768px) {
+  #sidebar {
+    margin-left: -280px;
+  }
+  #sidebar.active {
+    margin-left: 0;
+  }
+}
