@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous"<link rel="stylesheet" type="text/css" href="css/app.css">
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/app.css">
     <title>Austin BBQ</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -13,29 +13,23 @@
 
       <!-- Sidebar Holder -->
       <nav id="sidebar" >
-          <div class="sidebar-header">
-              <h3>Search</h3>
+          <div>
+              <h3>Search for...</h3>
           </div>
 
-          <div>
-            <form class="navbar-form navbar-right">
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Search">
-              </div>
-              <button type="submit" class="btn btn-default">
-                <span class="glyphicon glyphicon-search"></span>
-              </button>
-            </form>
-          </div>
+
+      <div class="input-group">
+        <input class="form-control" type="text" placeholder="Search" data-bind="textInput: filter">
+        <span class="input-group-addon"><span class="glyphicon glyphicon-filter"</span></span>
+      </div>
+
 
           <div id="bbqlist" >
             <h3>BBQ Locations</h3>
-            <ul class="list-group">
-                <li class="list-group-item">Loc 1</li>
-                <li class="list-group-item">Loc 2</li>
-                <li class="list-group-item">Loc 3</li>
-                <li class="list-group-item">Loc 4</li>
-                <li class="list-group-item" >Loc 5</li>
+            <ul class="list-group" data-bind="foreach: listVisible" >
+                <li class="list-group-item" data-bind="text: name,
+                                css: { active: $data == $root.chosenListId() },
+                                click: $root.goToList"></li>
             </ul>
           </div>
       </nav>
@@ -43,16 +37,16 @@
 
       <!-- Page Content Holder -->
       <div id="content">
-          <nav id="nav" class="navbar">
-              <div class="container-fluid">
+          <nav id="nav" >
+              <div >
 
-                <div id="header" class="page-header">
+                <div id="header" >
                   <h1>Austin's Best BBQ</h1>
                 </div>
 
-                <div class="navbar-header">
-                  <button type="button" id="sidebarCollapse" class="btn navbar-btn">
-                    <span class="glyphicon glyphicon-menu-hamburger"></span>
+                <div >
+                  <button class="btn btn-default" type="button" id="sidebarCollapse" >
+                    <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                   </button>
                 </div>
               </div>
@@ -70,5 +64,6 @@
   <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCsigCY6OXfp_xtN1qJ5IC9w13sLGp_6k&v=3&callback=initMap">
   </script>
+  <script type="text/javascript" src="js/vm.js"></script>
   <script type="text/javascript" src="js/app.js"></script>
 </html>
