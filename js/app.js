@@ -9,22 +9,22 @@ let map;
 let markers = [];
 
 let locations = [
-  {name: 'Iron Works BBQ', location: {lat: 30.2622277, lng: -97.7411904}},
-  {name: 'Franklin Barbecue', location: {lat: 30.2673754, lng: -97.7297644}},
-  {name: 'La Barbecue', location: {lat:30.2561453, lng: -97.7245339}},
-  {name: "Stubb's Bar-B-Q", location: {lat: 30.2685053, lng: -97.7384466}},
-  {name: 'Kerlin BBQ', location: {lat: 30.2578579, lng: -97.7278947}}
+  {name: 'Iron Works BBQ', location: {lat: 30.2624539, lng: -97.7393236}},
+  {name: 'Franklin Barbecue', location: {lat: 30.2701257, lng: -97.7314623}},
+  {name: 'La Barbecue', location: {lat:30.256143, lng: -97.722482}},
+  {name: "Stubb's Bar-B-Q", location: {lat: 30.2686802, lng: -97.7360462}},
+  {name: 'Kerlin BBQ', location: {lat: 30.2581486, lng: -97.7261113}}
 ];
 
 function initMap() {
+  //create the map
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 30.2622, lng: -97.7390},
     mapTypeControl: false,
     zoom: 14
   });
 
-
-
+  //create new infowindow
   let largeInfowindow = new google.maps.InfoWindow();
 
   //loop through locations array and add relevant info to markers array
@@ -41,7 +41,7 @@ function initMap() {
     });
     //push marker to array or markers
     markers.push(marker);
-    //open marker info InfoWindo
+    //open marker info InfoWindow
     marker.addListener('click', function() {
       toggleBounce(this);
       populateInfoWindow(this, largeInfowindow);
@@ -72,6 +72,7 @@ function initMap() {
   }
 
 }//end initMap
+
 
 
 //viewport

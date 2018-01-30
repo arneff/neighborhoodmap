@@ -29,8 +29,20 @@
             <ul class="list-group" data-bind="foreach: listVisible" >
                 <li class="list-group-item" data-bind="text: name,
                                 css: { active: $data == $root.chosenListId() },
-                                click: $root.goToList"></li>
+                                click: $root.goToList,"></li>
             </ul>
+          </div>
+
+          <div id="listInfo" class="row">
+            <div class="col-sm-6 col-md-12">
+              <div class="thumbnail">
+                <img alt="...">
+                <div class="caption">
+                  <h3 data-bind="text: chosenListId() && chosenListId().name" ></h3>
+                  <p>...</p>
+                </div>
+              </div>
+            </div>
           </div>
       </nav>
 
