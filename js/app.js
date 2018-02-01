@@ -4,6 +4,7 @@ $('#sidebarCollapse').on('click', function () {
 
 //create variable for map
 let map;
+const responseContainer = document.querySelector('#thumb');
 
 //create array to hold all markers
 let markers = [];
@@ -73,6 +74,45 @@ function initMap() {
 
 }//end initMap
 
+//call foursquare API for business information
+fetch(`https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query=stubbsbbq&client_id=I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS&client_secret=NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031`)
+.then(function(response) {
+  if (response.status !== 200) {
+    console.log('Looks like there was a problem. Status Code: ' + response.status);
+    return;
+  }
+  response.json().then(function(data) {
+    console.log(data);
+  });
+})
+.catch(function(err) {
+  console.log('Fetch Error :-S', err);
+});
 
+//call foursquare api for photo 
+fetch(`https://api.foursquare.com/v2/venues/40fb0f00f964a520fc0a1fe3/photos?&client_id=I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS&client_secret=NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031`)
+.then(function(response) {
+  if (response.status !== 200) {
+    console.log('Looks like there was a problem. Status Code: ' + response.status);
+    return;
+  }
+  return response.json();
+}).then(addPhoto)
+.catch(e => requestError(e, 'image'));
 
-//viewport
+function addPhoto(data) {
+  let htmlContent = '';
+  const firstImage = data.response.photos.items[0];
+
+  if (firstImage) {
+      htmlContent = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
+  } else {
+      htmlContent = 'Unfortunately, no image was returned for your search.'
+  }
+  responseContainer.insertAdjacentHTML('afterbegin', htmlContent);
+}
+
+function requestError(e, part) {
+  console.log(e);
+  responseContainer.insertAdjacentHTML('beforeend', `<p class="network-warning">Oh no! There was an error making a request for the ${part}.</p>`);
+}
