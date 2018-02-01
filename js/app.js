@@ -81,15 +81,29 @@ fetch(`https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query=stubbsbbq
     console.log('Looks like there was a problem. Status Code: ' + response.status);
     return;
   }
-  response.json().then(function(data) {
-    console.log(data);
-  });
-})
-.catch(function(err) {
-  console.log('Fetch Error :-S', err);
-});
+    return response.json();
+}).then(addVenueInfo)
+.catch(e => requestError(e, 'venue'));
 
-//call foursquare api for photo 
+function addVenueInfo(data) {
+  console.log(data);
+  let htmlContent = '';
+  let firstVenue = data.response.venues[0];
+  let fphone = firstVenue.contact.formattedPhone;
+  let fstreet = firstVenue.location.formattedAddress[0];
+  let fcity = firstVenue.location.formattedAddress[1];
+
+  if (firstVenue) {
+      htmlContent = "<p>Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
+  } else {
+      htmlContent = 'Unfortunately, no image was returned for your search.'
+  }
+  responseContainer.insertAdjacentHTML('beforeend', htmlContent);
+}
+
+
+
+//call foursquare api for photo
 fetch(`https://api.foursquare.com/v2/venues/40fb0f00f964a520fc0a1fe3/photos?&client_id=I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS&client_secret=NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031`)
 .then(function(response) {
   if (response.status !== 200) {
@@ -100,6 +114,7 @@ fetch(`https://api.foursquare.com/v2/venues/40fb0f00f964a520fc0a1fe3/photos?&cli
 }).then(addPhoto)
 .catch(e => requestError(e, 'image'));
 
+//get photo from api call and construct string and add img elemt to DOM
 function addPhoto(data) {
   let htmlContent = '';
   const firstImage = data.response.photos.items[0];
@@ -112,6 +127,7 @@ function addPhoto(data) {
   responseContainer.insertAdjacentHTML('afterbegin', htmlContent);
 }
 
+//display message if error occurs
 function requestError(e, part) {
   console.log(e);
   responseContainer.insertAdjacentHTML('beforeend', `<p class="network-warning">Oh no! There was an error making a request for the ${part}.</p>`);
