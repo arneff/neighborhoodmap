@@ -19,17 +19,17 @@
 
 
       <div class="input-group">
-        <input class="form-control" type="text" placeholder="Search" data-bind="textInput: filter">
+        <input id="filter" class="form-control" type="text" placeholder="Search" data-bind="textInput: filter">
         <span class="input-group-addon"><span class="glyphicon glyphicon-filter"</span></span>
       </div>
 
 
           <div id="bbqlist" >
             <h3>BBQ Locations</h3>
-            <ul class="list-group" data-bind="foreach: listVisible" >
-                <li class="list-group-item" data-bind="text: name,
+            <ul id="venueList"class="list-group" data-bind="foreach: listVisible" >
+                <li  class="list-group-item" data-bind="text: name,
                                 css: { active: $data == $root.chosenListId() },
-                                click: $root.goToList,"></li>
+                                click: $root.goToList"></li>
             </ul>
           </div>
 
@@ -37,7 +37,9 @@
             <div class="col-sm-6 col-md-12">
               <div  class="thumbnail">
                 <div id="thumb" class="caption">
-                  <h3 data-bind="text: chosenListId() && chosenListId().name" ></h3>
+                  <span id="vPhoto"></span>
+                  <h3 id="venue" data-bind="text: chosenListId() && chosenListId().name" ></h3>
+                  <p id="vInfo"></p>
                 </div>
               </div>
             </div>

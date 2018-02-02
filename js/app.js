@@ -4,6 +4,12 @@ $('#sidebarCollapse').on('click', function () {
 
 //create variable for map
 let map;
+
+//foursquare variables
+const clientID = 'I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS';
+const clientS = 'NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031';
+let venueID;
+let vQuery;
 const responseContainer = document.querySelector('#thumb');
 
 //create array to hold all markers
@@ -12,7 +18,7 @@ let markers = [];
 let locations = [
   {name: 'Iron Works BBQ', location: {lat: 30.2624539, lng: -97.7393236}},
   {name: 'Franklin Barbecue', location: {lat: 30.2701257, lng: -97.7314623}},
-  {name: 'La Barbecue', location: {lat:30.256143, lng: -97.722482}},
+  {name: 'Rollin Smoke BBQ', location: {lat: 30.2629957, lng: -97.7275769}},
   {name: "Stubb's Bar-B-Q", location: {lat: 30.2686802, lng: -97.7360462}},
   {name: 'Kerlin BBQ', location: {lat: 30.2581486, lng: -97.7261113}}
 ];
@@ -28,7 +34,7 @@ function initMap() {
   //create new infowindow
   let largeInfowindow = new google.maps.InfoWindow();
 
-  //loop through locations array and add relevant info to markers array
+  //loop through locations array and create markers
   for (let i = 0; i < locations.length; i++) {
     let position = locations[i].location;
     let name = locations[i].name;
@@ -74,8 +80,14 @@ function initMap() {
 
 }//end initMap
 
+$('ul li').click(function() {
+  callVenue($('.active').text());
+})
+
+
 //call foursquare API for business information
-fetch(`https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query=stubbsbbq&client_id=I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS&client_secret=NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031`)
+function callVenue(query) {
+  fetch("https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query="+query+"&client_id="+ clientID + "&client_secret=" + clientS + "&v=20183031")
 .then(function(response) {
   if (response.status !== 200) {
     console.log('Looks like there was a problem. Status Code: ' + response.status);
@@ -83,28 +95,29 @@ fetch(`https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query=stubbsbbq
   }
     return response.json();
 }).then(addVenueInfo)
+.then(callPhoto)
 .catch(e => requestError(e, 'venue'));
+}
 
 function addVenueInfo(data) {
-  console.log(data);
-  let htmlContent = '';
   let firstVenue = data.response.venues[0];
+  venueID = firstVenue.id;
   let fphone = firstVenue.contact.formattedPhone;
   let fstreet = firstVenue.location.formattedAddress[0];
   let fcity = firstVenue.location.formattedAddress[1];
 
   if (firstVenue) {
-      htmlContent = "<p>Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
+      vInfo.innerHTML = "Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
   } else {
-      htmlContent = 'Unfortunately, no image was returned for your search.'
+      vInfo.innerHTML = 'Unfortunately, no venue information was returned for your search.'
   }
-  responseContainer.insertAdjacentHTML('beforeend', htmlContent);
 }
 
 
-
 //call foursquare api for photo
-fetch(`https://api.foursquare.com/v2/venues/40fb0f00f964a520fc0a1fe3/photos?&client_id=I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS&client_secret=NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031`)
+
+function callPhoto() {
+  fetch("https://api.foursquare.com/v2/venues/"+ venueID +"/photos?&client_id=" + clientID + "&client_secret=" + clientS)
 .then(function(response) {
   if (response.status !== 200) {
     console.log('Looks like there was a problem. Status Code: ' + response.status);
@@ -114,17 +127,18 @@ fetch(`https://api.foursquare.com/v2/venues/40fb0f00f964a520fc0a1fe3/photos?&cli
 }).then(addPhoto)
 .catch(e => requestError(e, 'image'));
 
+}
+
 //get photo from api call and construct string and add img elemt to DOM
 function addPhoto(data) {
-  let htmlContent = '';
   const firstImage = data.response.photos.items[0];
 
   if (firstImage) {
-      htmlContent = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
+      vPhoto.innerHTML = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
   } else {
-      htmlContent = 'Unfortunately, no image was returned for your search.'
+      vPhoto.innerHTML = 'Unfortunately, no image was returned for your search.';
   }
-  responseContainer.insertAdjacentHTML('afterbegin', htmlContent);
+
 }
 
 //display message if error occurs
