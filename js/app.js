@@ -51,6 +51,14 @@ function initMap() {
     //open marker info InfoWindow
     marker.addListener('click', function() {
       toggleBounce(this);
+      $('li').each(function(index) {
+        if ($(this).hasClass('active')){
+          $(this).removeClass('active');
+        }
+        if(marker.name === $(this).text()) {
+          $(this).toggleClass('active');
+        }
+      })
       callVenue(this.name);
       populateInfoWindow(this, largeInfowindow);
     });
