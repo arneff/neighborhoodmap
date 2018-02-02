@@ -51,6 +51,7 @@ function initMap() {
     //open marker info InfoWindow
     marker.addListener('click', function() {
       toggleBounce(this);
+      callVenue(this.name);
       populateInfoWindow(this, largeInfowindow);
     });
 
@@ -78,12 +79,13 @@ function initMap() {
     }
   }
 
+
+
 }//end initMap
 
 $('ul li').click(function() {
   callVenue($('.active').text());
-})
-
+});
 
 //call foursquare API for business information
 function callVenue(query) {
@@ -99,6 +101,7 @@ function callVenue(query) {
 .catch(e => requestError(e, 'venue'));
 }
 
+//add venue data from api call to DOM
 function addVenueInfo(data) {
   let firstVenue = data.response.venues[0];
   venueID = firstVenue.id;
@@ -115,7 +118,6 @@ function addVenueInfo(data) {
 
 
 //call foursquare api for photo
-
 function callPhoto() {
   fetch("https://api.foursquare.com/v2/venues/"+ venueID +"/photos?&client_id=" + clientID + "&client_secret=" + clientS)
 .then(function(response) {
@@ -129,7 +131,7 @@ function callPhoto() {
 
 }
 
-//get photo from api call and construct string and add img elemt to DOM
+//get photo from api call and construct url string and add img elemt to DOM
 function addPhoto(data) {
   const firstImage = data.response.photos.items[0];
 
