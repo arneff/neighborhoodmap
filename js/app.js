@@ -2,9 +2,6 @@ $('#sidebarCollapse').on('click', function () {
     $('#sidebar').toggleClass('active');
 });
 
-//create variable for map
-let map;
-
 //foursquare variables
 const clientID = 'I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS';
 const clientS = 'NU5J4LLXZSXCIXHBGU01TGFRQYAZDRTITANLZ0PIKLGYHQ02&v=20183031';
@@ -12,8 +9,6 @@ let venueID;
 let vQuery;
 const responseContainer = document.querySelector('#thumb');
 
-//create array to hold all markers
-let markers = [];
 
 let locations = [
   {name: 'Iron Works BBQ', location: {lat: 30.2624539, lng: -97.7393236}},
@@ -23,58 +18,56 @@ let locations = [
   {name: 'Kerlin BBQ', location: {lat: 30.2581486, lng: -97.7261113}}
 ];
 
+//create array to hold all markers
+let markers = [];
+//create variable for map
+let map;
+
+
 function initMap() {
   //create the map
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 30.2622, lng: -97.7390},
     mapTypeControl: false,
     zoom: 14
-  });
-
-  //create new infowindow
-  let largeInfowindow = new google.maps.InfoWindow();
-
-  //loop through locations array and create markers
-  for (let i = 0; i < locations.length; i++) {
-    let position = locations[i].location;
-    let name = locations[i].name;
-
-    let marker = new google.maps.Marker ({
-      map: map,
-      position: position,
-      name: name,
-      animation: google.maps.Animation.DROP,
-      id: i
-    });
-    //push marker to array or markers
-    markers.push(marker);
-    //open marker info InfoWindow
-    marker.addListener('click', function() {
-      toggleBounce(this);
-      $('li').each(function(index) {
-        if ($(this).hasClass('active')){
-          $(this).removeClass('active');
-        }
-        if(marker.name === $(this).text()) {
-          $(this).toggleClass('active');
-        }
-      })
-      callVenue(this.name);
-      populateInfoWindow(this, largeInfowindow);
     });
 
-  }
+  let infowindow = new google.maps.InfoWindow();
 
-  function populateInfoWindow(marker, infowindow) {
-    if (infowindow.marker != marker) {
-      infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.name + '</div>');
-      infowindow.open(map, marker);
-      //clear marker if window is closed
+  dropMarkers();
 
+  function dropMarkers() {
+    for (let i = 0; i < locations.length; i++) {
+      addMarkers(locations[i].location, locations[i].name, i);
     }
-  }
+  }//end drop markers
 
+  function addMarkers(location, name, id) {
+      let marker = new google.maps.Marker({
+        name: name,
+        position: location,
+        map: map,
+        animation: google.maps.Animation.DROP,
+        id: id
+      });
+      //create new infowindow
+      marker.addListener('click', function() {
+        toggleBounce(this);
+        populateInfoWindow(this, infowindow);
+        $('li').each(function(index) {
+         if ($(this).hasClass('active')){
+           $(this).removeClass('active');
+         }
+         if(marker.name === $(this).text()) {
+           $(this).toggleClass('active');
+         }
+       });
+       callVenue(this.name);
+      });
+
+  }//end add marker
+
+  //animate (bounce) marker when clicked
   function toggleBounce(marker) {
     if (marker.getAnimation() !== null) {
       marker.setAnimation(null);
@@ -87,9 +80,22 @@ function initMap() {
     }
   }
 
+  //create infowindow
+  function populateInfoWindow(marker, infowindow) {
+    if (infowindow.marker != marker) {
+      infowindow.marker = marker;
+      infowindow.setContent('<div>' + marker.name + '</div>');
+      infowindow.open(map, marker);
+
+    }
+
+  }
+
+}//end init map
 
 
-}//end initMap
+
+
 
 $('ul li').click(function() {
   callVenue($('.active').text());
@@ -120,7 +126,7 @@ function addVenueInfo(data) {
   if (firstVenue) {
       vInfo.innerHTML = "Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
   } else {
-      vInfo.innerHTML = 'Unfortunately, no venue information was returned for your search.'
+      vInfo.innerHTML = 'Unfortunately, no venue information was returned for your search.';
   }
 }
 
