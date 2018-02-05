@@ -5,7 +5,7 @@
 * [Overview](#overview)
 * [How to Run the App](#how-to-run-the-app)
 
-##Overview
+## Overview
 The backbone of the Neighborhood Map Project:
 * Google Maps API
 * Foursquare API
