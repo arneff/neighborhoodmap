@@ -29,9 +29,6 @@ function AppViewModel() {
   }, this);
 
 
-
-
-
 };
 
 

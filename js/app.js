@@ -34,6 +34,7 @@ function initMap() {
 
   let infowindow = new google.maps.InfoWindow();
 
+
   dropMarkers();
 
   function dropMarkers() {
@@ -80,7 +81,6 @@ function initMap() {
     }
   }
 
-  //create infowindow
   function populateInfoWindow(marker, infowindow) {
     if (infowindow.marker != marker) {
       infowindow.marker = marker;
