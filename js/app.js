@@ -113,12 +113,14 @@ function callVenue(query) {
 //add venue data from api call to DOM
 function addVenueInfo(data) {
   let firstVenue = data.response.venues[0];
+  console.log(firstVenue);
   venueID = firstVenue.id;
   let fphone = firstVenue.contact.formattedPhone;
   let fstreet = firstVenue.location.formattedAddress[0];
   let fcity = firstVenue.location.formattedAddress[1];
 
   if (firstVenue) {
+      venue.innerHTML = firstVenue.name;
       vInfo.innerHTML = "Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
   } else {
       vInfo.innerHTML = 'Unfortunately, no venue information was returned for your search.';
@@ -143,7 +145,6 @@ function callPhoto() {
 //get photo from api call and construct url string and add img elemt to DOM
 function addPhoto(data) {
   const firstImage = data.response.photos.items[0];
-  console.log(firstImage);
 
   if (firstImage) {
       vPhoto.innerHTML = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
