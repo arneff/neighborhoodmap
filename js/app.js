@@ -1,6 +1,4 @@
-$('#sidebarCollapse').on('click', function () {
-    $('#sidebar').toggleClass('active');
-});
+
 
 //foursquare variables
 const clientID = 'I4QMXPAD13TPSNX3PKGKMOESVQ1QABUEG03KCUAESATUNDLS';
@@ -25,6 +23,8 @@ let map;
 
 
 function initMap() {
+
+
   //create the map
   map = new google.maps.Map(document.getElementById('map'), {
     center: {lat: 30.2622, lng: -97.7390},
@@ -39,11 +39,11 @@ function initMap() {
 
   function dropMarkers() {
     for (let i = 0; i < locations.length; i++) {
-      addMarkers(locations[i].location, locations[i].name, i);
+      createMarkers(locations[i].location, locations[i].name, i);
     }
   }//end drop markers
 
-  function addMarkers(location, name, id) {
+  function createMarkers(location, name, id) {
       let marker = new google.maps.Marker({
         name: name,
         position: location,
@@ -51,10 +51,12 @@ function initMap() {
         animation: google.maps.Animation.DROP,
         id: id
       });
-      //create new infowindow
+      markers.push(marker);
       marker.addListener('click', function() {
         toggleBounce(this);
         populateInfoWindow(this, infowindow);
+        //set class to active on list item when marker is clicked
+        //remove active class from previoiusly clicked item
         $('li').each(function(index) {
          if ($(this).hasClass('active')){
            $(this).removeClass('active');
@@ -62,44 +64,37 @@ function initMap() {
          if(marker.name === $(this).text()) {
            $(this).toggleClass('active');
          }
-       });
+        });
+
        callVenue(this.name);
       });
 
-  }//end add marker
-
-  //animate (bounce) marker when clicked
-  function toggleBounce(marker) {
-    if (marker.getAnimation() !== null) {
-      marker.setAnimation(null);
-    }
-    else {
-      marker.setAnimation(google.maps.Animation.BOUNCE);
-      setTimeout(function() {
-        marker.setAnimation(null);
-      }, 1470);
-    }
-  }
-
-  function populateInfoWindow(marker, infowindow) {
-    if (infowindow.marker != marker) {
-      infowindow.marker = marker;
-      infowindow.setContent('<div>' + marker.name + '</div>');
-      infowindow.open(map, marker);
-
-    }
-
-  }
-
+  }//end create marker
+        console.log(markers);
 }//end init map
 
+//animate (bounce) marker when clicked
+function toggleBounce(marker) {
+  if (marker.getAnimation() !== null) {
+    marker.setAnimation(null);
+  }
+  else {
+    marker.setAnimation(google.maps.Animation.BOUNCE);
+    setTimeout(function() {
+      marker.setAnimation(null);
+    }, 1400);
+  }
+}
 
+function populateInfoWindow(marker, infowindow) {
+  if (infowindow.marker != marker) {
+    infowindow.marker = marker;
+    infowindow.setContent('<div>' + marker.name + '</div>');
+    infowindow.open(map, marker);
 
+  }
 
-
-$('ul li').click(function() {
-  callVenue($('.active').text());
-});
+}
 
 //call foursquare API for business information
 function callVenue(query) {
@@ -148,6 +143,7 @@ function callPhoto() {
 //get photo from api call and construct url string and add img elemt to DOM
 function addPhoto(data) {
   const firstImage = data.response.photos.items[0];
+  console.log(firstImage);
 
   if (firstImage) {
       vPhoto.innerHTML = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
@@ -162,3 +158,60 @@ function requestError(e, part) {
   console.log(e);
   responseContainer.insertAdjacentHTML('beforeend', `<p class="network-warning">Oh no! There was an error making a request for the ${part}.</p>`);
 }
+
+
+
+
+function AppViewModel() {
+  //data
+  var self = this;
+  self.chosenListId = ko.observable();
+  self.filter = ko.observable();
+  self.url = ko.observable();
+
+
+
+
+  //behaviors
+  self.goToList = function(locations) {
+    self.chosenListId(locations);
+    callVenue(self.chosenListId().name);
+    getMarker();
+
+  };
+  self.hide = function() {
+    $('#sidebar').toggleClass('active');
+  };
+
+
+  //if nothing is in the filter input return the list otherwise return list based on input
+  //https://stackoverflow.com/questions/34584181/create-live-search-with-knockout?rq=1
+  self.listVisible = ko.computed(function() {
+    return locations.filter(function(locations) {
+      if (!self.filter() || locations.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1) {
+        for (i = 0; i < markers.length; i++) {
+          if (markers[i].name.toLowerCase().indexOf(self.filter().toLowerCase()) == -1){
+            markers[i].setVisible(false);
+          }
+          else {
+            markers[i].setVisible(true);
+          }
+        }
+        return locations;
+      }
+    });
+
+  }, this);
+
+  getMarker = function() {
+    for (i = 0; i < markers.length; i++) {
+      if (markers[i].name === self.chosenListId().name){
+        toggleBounce(markers[i]);
+      }
+    }
+  };
+
+
+}//end App View Model
+
+ko.applyBindings(new AppViewModel());

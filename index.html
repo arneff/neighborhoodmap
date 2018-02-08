@@ -20,14 +20,14 @@
 
       <div class="input-group">
         <input id="filter" class="form-control" type="text" placeholder="Search" data-bind="textInput: filter">
-        <span class="input-group-addon"><span class="glyphicon glyphicon-filter"</span></span>
+        <span class="input-group-addon"><span class="glyphicon glyphicon-filter" ></span></span>
       </div>
 
 
           <div id="bbqlist" >
             <h3>BBQ Locations</h3>
-            <ul id="venueList"class="list-group" data-bind="foreach: listVisible" >
-                <li  class="list-group-item" data-bind="text: name,
+            <ul id="venueList" class="list-group" data-bind="foreach: listVisible" >
+                <li  id="item" class="list-group-item" data-bind="text: name,
                                 css: { active: $data == $root.chosenListId() },
                                 click: $root.goToList"></li>
             </ul>
@@ -37,7 +37,7 @@
             <div class="col-sm-6 col-md-12">
               <div  class="thumbnail">
                 <div id="thumb" class="caption">
-                  <span id="vPhoto"></span>
+                  <span id="vPhoto" ></span>
                   <h3 id="venue" data-bind="text: chosenListId() && chosenListId().name" ></h3>
                   <p id="vInfo"></p>
                 </div>
@@ -57,7 +57,7 @@
                 </div>
 
                 <div >
-                  <button class="btn btn-default" type="button" id="sidebarCollapse" >
+                  <button class="btn btn-default" type="button" id="sidebarCollapse" data-bind="click: hide">
                     <span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span>
                   </button>
                 </div>
@@ -68,14 +68,14 @@
         </div><!--end container -->
         <footer>
         </footer>
+    </div>
 
-  </body>
 
-  <script type='text/javascript' src='js/lib/bower_components/knockout/dist/knockout.js'></script>
+  <script src="js/lib/bower_components/knockout/dist/knockout.js"></script>
   <script src="https://code.jquery.com/jquery-1.12.0.min.js"></script>
+  <script src="js/app.js"></script>
   <script async defer
       src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBCsigCY6OXfp_xtN1qJ5IC9w13sLGp_6k&v=3&callback=initMap">
   </script>
-  <script type="text/javascript" src="js/vm.js"></script>
-  <script type="text/javascript" src="js/app.js"></script>
+  </body>
 </html>
