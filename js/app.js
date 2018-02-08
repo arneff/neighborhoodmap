@@ -20,6 +20,7 @@ let locations = [
 let markers = [];
 //create variable for map
 let map;
+let url;
 
 
 function initMap() {
@@ -70,7 +71,7 @@ function initMap() {
       });
 
   }//end create marker
-        console.log(markers);
+
 }//end init map
 
 //animate (bounce) marker when clicked
@@ -113,7 +114,6 @@ function callVenue(query) {
 //add venue data from api call to DOM
 function addVenueInfo(data) {
   let firstVenue = data.response.venues[0];
-  console.log(firstVenue);
   venueID = firstVenue.id;
   let fphone = firstVenue.contact.formattedPhone;
   let fstreet = firstVenue.location.formattedAddress[0];
@@ -146,12 +146,12 @@ function callPhoto() {
 function addPhoto(data) {
   const firstImage = data.response.photos.items[0];
 
+
   if (firstImage) {
-      vPhoto.innerHTML = "<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">";
+      AppViewModel.vPhoto = ko.observable("<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">");
   } else {
       vPhoto.innerHTML = 'Unfortunately, no image was returned for your search.';
   }
-
 }
 
 //display message if error occurs
@@ -162,16 +162,14 @@ function requestError(e, part) {
 
 
 
+//begin View Model
 
 function AppViewModel() {
   //data
   var self = this;
   self.chosenListId = ko.observable();
   self.filter = ko.observable();
-  self.url = ko.observable();
-
-
-
+  self.vPhoto = ko.observable();
 
   //behaviors
   self.goToList = function(locations) {
