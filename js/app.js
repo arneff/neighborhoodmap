@@ -22,6 +22,8 @@ let markers = [];
 let map;
 let url;
 
+let application;
+
 
 function initMap() {
 
@@ -100,15 +102,15 @@ function populateInfoWindow(marker, infowindow) {
 //call foursquare API for business information
 function callVenue(query) {
   fetch("https://api.foursquare.com/v2/venues/search?ll=30.2,-97.7&query="+query+"&client_id="+ clientID + "&client_secret=" + clientS + "&v=20183031")
-.then(function(response) {
-  if (response.status !== 200) {
-    console.log('Looks like there was a problem. Status Code: ' + response.status);
-    return;
-  }
-    return response.json();
-}).then(addVenueInfo)
-.then(callPhoto)
-.catch(e => requestError(e, 'venue'));
+    .then(function(response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' + response.status);
+        return;
+      }
+        return response.json();
+    }).then(addVenueInfo)
+    .then(callPhoto)
+    .catch(e => requestError(e, 'venue'));
 }
 
 //add venue data from api call to DOM
@@ -120,10 +122,10 @@ function addVenueInfo(data) {
   let fcity = firstVenue.location.formattedAddress[1];
 
   if (firstVenue) {
-      venue.innerHTML = firstVenue.name;
-      vInfo.innerHTML = "Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity;
+      application.venueName(firstVenue.name);
+      application.venueDetails("Phone:</br>" + fphone + "</br></br>Address:</br>" + fstreet + "</br>" + fcity);
   } else {
-      vInfo.innerHTML = 'Unfortunately, no venue information was returned for your search.';
+      application.venueDetails('Unfortunately, no venue information was returned for your search.');
   }
 }
 
@@ -131,14 +133,14 @@ function addVenueInfo(data) {
 //call foursquare api for photo
 function callPhoto() {
   fetch("https://api.foursquare.com/v2/venues/"+ venueID +"/photos?&client_id=" + clientID + "&client_secret=" + clientS)
-.then(function(response) {
-  if (response.status !== 200) {
-    console.log('Looks like there was a problem. Status Code: ' + response.status);
-    return;
-  }
-  return response.json();
-}).then(addPhoto)
-.catch(e => requestError(e, 'image'));
+    .then(function(response) {
+      if (response.status !== 200) {
+        console.log('Looks like there was a problem. Status Code: ' + response.status);
+        return;
+      }
+      return response.json();
+    }).then(addPhoto)
+    .catch(e => requestError(e, 'image'));
 
 }
 
@@ -148,9 +150,9 @@ function addPhoto(data) {
 
 
   if (firstImage) {
-      AppViewModel.vPhoto = ko.observable("<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">");
+      application.vPhoto("<img src="+ firstImage.prefix + '150x150' + firstImage.suffix + ">");
   } else {
-      vPhoto.innerHTML = 'Unfortunately, no image was returned for your search.';
+      application.vPhoto('<p>Unfortunately, no image was returned for your search.</p>');
   }
 }
 
@@ -170,6 +172,9 @@ function AppViewModel() {
   self.chosenListId = ko.observable();
   self.filter = ko.observable();
   self.vPhoto = ko.observable();
+  self.venueName = ko.observable();
+  self.venueDetails = ko.observable();
+
 
   //behaviors
   self.goToList = function(locations) {
@@ -189,7 +194,7 @@ function AppViewModel() {
     return locations.filter(function(locations) {
       if (!self.filter() || locations.name.toLowerCase().indexOf(self.filter().toLowerCase()) !== -1) {
         for (i = 0; i < markers.length; i++) {
-          if (markers[i].name.toLowerCase().indexOf(self.filter().toLowerCase()) == -1){
+          if (markers[i].name.toLowerCase().indexOf(self.filter().toLowerCase()) == -1 ) {
             markers[i].setVisible(false);
           }
           else {
@@ -198,9 +203,18 @@ function AppViewModel() {
         }
         return locations;
       }
+      else {
+        for (i = 0; i < markers.length; i++) {
+          if (markers[i].name.toLowerCase().indexOf(self.filter().toLowerCase()) == -1 ) {
+            markers[i].setVisible(false);
+          }
+        }
+      }
     });
 
   }, this);
+
+
 
   getMarker = function() {
     for (i = 0; i < markers.length; i++) {
@@ -212,5 +226,5 @@ function AppViewModel() {
 
 
 }//end App View Model
-
-ko.applyBindings(new AppViewModel());
+application = new AppViewModel();
+ko.applyBindings(application);
