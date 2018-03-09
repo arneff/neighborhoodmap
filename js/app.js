@@ -56,7 +56,6 @@ function initMap() {
       });
       markers.push(marker);
       marker.addListener('click', function() {
-        toggleBounce(this);
         populateInfoWindow(this, infowindow);
         getLocation(this);
         //set class to active on list item when marker is clicked
