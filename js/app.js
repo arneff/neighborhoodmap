@@ -58,16 +58,19 @@ function initMap() {
       marker.addListener('click', function() {
         toggleBounce(this);
         populateInfoWindow(this, infowindow);
+        application.goToList(this);
         //set class to active on list item when marker is clicked
         //remove active class from previoiusly clicked item
-        $('li').each(function(index) {
+        /*$('li').each(function(index) {
          if ($(this).hasClass('active')){
            $(this).removeClass('active');
          }
          if(marker.name === $(this).text()) {
            $(this).toggleClass('active');
          }
-        });
+       });*/
+
+
 
        callVenue(this.name);
       });
@@ -179,6 +182,7 @@ function AppViewModel() {
   //behaviors
   self.goToList = function(locations) {
     self.chosenListId(locations);
+    console.log(self.chosenListId().name)
     callVenue(self.chosenListId().name);
     getMarker();
 
