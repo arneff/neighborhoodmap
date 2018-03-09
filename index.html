@@ -29,7 +29,7 @@
             <ul id="venueList" class="list-group" data-bind="foreach: listVisible, valueUpdate:'afterkeydown'" >
                 <li  id="item" class="list-group-item" data-bind="text: name,
                                 css: { active:  $data == $root.chosenListId() },
-                                click: $root.goToList"></li>
+                                click: $parent.goToList"></li>
             </ul>
           </div>
 

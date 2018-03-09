@@ -58,7 +58,7 @@ function initMap() {
       marker.addListener('click', function() {
         toggleBounce(this);
         populateInfoWindow(this, infowindow);
-        application.goToList(this);
+        getLocation(this);
         //set class to active on list item when marker is clicked
         //remove active class from previoiusly clicked item
         /*$('li').each(function(index) {
@@ -165,7 +165,13 @@ function requestError(e, part) {
   responseContainer.insertAdjacentHTML('beforeend', `<p class="network-warning">Oh no! There was an error making a request for the ${part}.</p>`);
 }
 
-
+function getLocation(marker) {
+  for (i = 0; i < locations.length; i++) {
+    if (locations[i].name === marker.name){
+      application.goToList(locations[i])
+    }
+  }
+}
 
 //begin View Model
 
