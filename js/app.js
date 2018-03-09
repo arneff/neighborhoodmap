@@ -168,7 +168,7 @@ function requestError(e, part) {
 function getLocation(marker) {
   for (i = 0; i < locations.length; i++) {
     if (locations[i].name === marker.name){
-      application.goToList(locations[i])
+      application.goToList(locations[i]);
     }
   }
 }
@@ -188,7 +188,6 @@ function AppViewModel() {
   //behaviors
   self.goToList = function(locations) {
     self.chosenListId(locations);
-    console.log(self.chosenListId().name)
     callVenue(self.chosenListId().name);
     getMarker();
 
